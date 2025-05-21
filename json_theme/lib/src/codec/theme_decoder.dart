@@ -4062,9 +4062,49 @@ class ThemeDecoder {
     if (value is EdgeInsetsGeometry) {
       result = value;
     } else if (value != null) {
-      if (value is String || value is double || value is int) {
+      //===== string
+      if (value is String) {
+        var vl = value.split(',');
+        //===== LR,TB
+        if (vl.length == 1) {
+          result = EdgeInsets.all(JsonClass.maybeParseDouble(vl[0]) ?? 0.0);
+        }
+        //===== LR,TB
+        else if (vl.length == 2) {
+          result = EdgeInsets.symmetric(
+            horizontal: JsonClass.maybeParseDouble(vl[0]) ?? 0.0,
+            vertical: JsonClass.maybeParseDouble(vl[1]) ?? 0.0, //
+          );
+        }
+        //===== T,LR,B
+        else if (vl.length == 3) {
+          result = EdgeInsets.fromLTRB(
+            JsonClass.maybeParseDouble(vl[1]) ?? 0.0,
+            JsonClass.maybeParseDouble(vl[0]) ?? 0.0,
+            JsonClass.maybeParseDouble(vl[1]) ?? 0.0,
+            JsonClass.maybeParseDouble(vl[2]) ?? 0.0, //
+          );
+        }
+        //===== L,T,R,B
+        else if (vl.length == 4) {
+          result = EdgeInsets.fromLTRB(
+            JsonClass.maybeParseDouble(vl[0]) ?? 0.0,
+            JsonClass.maybeParseDouble(vl[1]) ?? 0.0,
+            JsonClass.maybeParseDouble(vl[2]) ?? 0.0,
+            JsonClass.maybeParseDouble(vl[3]) ?? 0.0, //
+          );
+        }
+      }
+      //===== double
+      else if (value is double) {
         result = EdgeInsets.all(JsonClass.parseDouble(value));
-      } else if (value is List) {
+      }
+      //===== int
+      else if (value is int) {
+        result = EdgeInsets.all(JsonClass.parseDouble(value));
+      }
+      //===== list
+      else if (value is List) {
         assert(value.length == 2 || value.length == 4);
         // LR,TB
         if (value.length == 1) {
